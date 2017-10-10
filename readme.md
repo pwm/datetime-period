@@ -1,6 +1,6 @@
 # DateTimePeriod
 
-An implementation of the datetime period type including all their possible relations. This library chould help you if you ever have to work with temporal intervals. For further information see the "How it works" paragraph.
+An implementation of the datetime period type for working with temporal intervals. The library includes all possible relations on intervals. For further information see the "How it works" paragraph.
 
 ## Requirements
 
