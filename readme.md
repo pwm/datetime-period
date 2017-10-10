@@ -113,13 +113,13 @@ An anchor, ie. discrete point, on the timeline. The most basic temporal type. A 
 An unanchored, directed portion of the timeline. Unanchored means it has no absolute relation to the timeline. Examples are "2 weeks" or "1 day, 2 hours and 3 minutes". Directed means it is perfectly valid to say "-3 days".
 
 ##### 3. Period
-An anchored interval on the timeline. There are several possible representations, the most common being a pair of ordered instants of identical granularity. Depending on the representation the interval of a period can be open or closed on both its start and end. A common way is to use a closed-open interval, ie. [start, end), which helps simplifying calculations. Eg. the period ["2017-10-10" - "2017-11-11") includes the instant "2017-10-10" but excludes the instant "2017-11-11".
+An anchored interval on the timeline. There are several possible representations, the most common being a pair of ordered instants of identical granularity. Depending on the representation the interval of a period can be open or closed on both its start and end. A common way is to use a closed-open interval, ie. [start, end), which helps simplifying calculations. Eg. the period ["2017-10-10", "2017-11-11") includes the instant "2017-10-10" but excludes the instant "2017-11-11".
 
 We arrived to the definition of a period. Now on to...
 
 #### Relations
 
-Defining relations on periods is somewhat complex as there is no [total order](https://en.wikipedia.org/wiki/Total_order). In 1983 James F. Allen wrote a paper in which he defined 13 jointly exhaustive and pairwise disjoint binary relations meaning that any 2 intervals are related exactly one way. You can see these 13 relations in action above, in the "Usage" section. These relations and the operations on them form what is referred to as [Allen's interval algebra](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html).
+Defining relations on periods is somewhat complex as there is no [total order](https://en.wikipedia.org/wiki/Total_order). In 1983 James F. Allen wrote a paper in which he defined 13 jointly exhaustive and pairwise disjoint binary relations on intervals, meaning that any 2 intervals are related exactly one way. You can see each of the 13 relations above, in the "Usage" section. These relations and the operations on them form what is referred to as [Allen's interval algebra](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html).
 
 ## Tests
 
