@@ -1,0 +1,39 @@
+{
+    "name": "pwm/datetime-period",
+    "description": "New project",
+    "type": "library",
+    "keywords": ["datetime", "interval algebra"],
+    "homepage": "https://github.com/pwm/datetime-period",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zsolt Szende",
+            "email": "zs@szende.me"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.1",
+        "phpstan/phpstan": "^0.7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pwm\\DateTimePeriod\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pwm\\DateTimePeriod\\": "tests/unit/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "scripts": {
+        "phpstan": "vendor/bin/phpstan analyse -l 7 src"
+    }
+}
