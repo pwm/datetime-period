@@ -113,7 +113,6 @@ class DateTimePeriod
     public function equals(DateTimePeriod $period): bool
     {
         // Using == for structural comparison
-        //$this == $period;
         return
             $this->getStart() == $period->getStart() &&
             $this->getEnd() == $period->getEnd();
