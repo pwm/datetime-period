@@ -1,6 +1,6 @@
 # DateTimePeriod
 
-An implementation of the datetime period type for working with temporal intervals. The library includes all possible relations on intervals. For further information see the "Usage" and "How it works" paragraphs.
+An implementation of the datetime period type for working with temporal intervals. The library includes the full set of relations on intervals defined by [Allen's Interval Algebra](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html). For further information see the "Usage" and "How it works" paragraphs.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ PHP 7.1+
 
 ## Usage
 
-To create a datetime period:
+##### Creation:
 
 ```php
 $start = new DateTimeImmutable('2010-10-10T10:10:10+00:00');
@@ -25,7 +25,23 @@ $end = $period->getEnd(); // DateTimeImmutable('2011-11-11T11:11:11+00:00')
 $interval = $period->getInterval(); // DateInterval('P1Y1M1DT1H1M1S')
 ```
 
-Below is the list of all possible relations between 2 periods:
+##### Restrictions:
+
+```php
+// Throws TimeZoneMismatch exception
+new DateTimePeriod(
+    new DateTimeImmutable('2017-10-10T10:10:10+02:00'),
+    new DateTimeImmutable('2017-10-10T10:10:10-05:00')
+);
+
+// Throws NegativeDateTimePeriod exception
+new DateTimePeriod(
+    new DateTimeImmutable('+1 day'),
+    new DateTimeImmutable('-1 day')
+);
+```
+
+##### The full set of relations between 2 periods:
 
 ```php
 $a = new DateTimePeriod(new DateTimeImmutable('...'), new DateTimeImmutable('...'));
@@ -84,20 +100,38 @@ $a->metBy($b);
 $a->precededBy($b);
 ```
 
-Restrictions:
+##### Working with different granularities:
+
+The 2 periods below meet on a timeline with hour granularity but does not meet on a more fine-grained timeline with minute granularity.
 
 ```php
-// Throws TimeZoneMismatch exception
-new DateTimePeriod(
-    new DateTimeImmutable('2017-10-10T10:10:10+02:00'),
-    new DateTimeImmutable('2017-10-10T10:10:10-05:00')
+$aStart = '2017-01-01T12:12:09.829462+00:00';
+$aEnd   = '2017-01-01T14:23:34.534678+00:00';
+$bStart = '2017-01-01T14:41:57.657388+00:00';
+$bEnd   = '2017-01-01T16:19:03.412832+00:00';
+
+$hourGranule = 'Y-m-d\TH';
+$a = new DateTimePeriod(
+    DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($aStart))->format($hourGranule)),
+    DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($aEnd))->format($hourGranule))
+);
+$b = new DateTimePeriod(
+    DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($bStart))->format($hourGranule)),
+    DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($bEnd))->format($hourGranule))
+);
+assert($a->meets($b) === true); // a meets b by the hour granule
+
+$minuteGranule = 'Y-m-d\TH:i';
+$a = new DateTimePeriod(
+    DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($aStart))->format($minuteGranule)),
+    DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($aEnd))->format($minuteGranule))
 );
 
-// Throws NegativeDateTimePeriod exception
-new DateTimePeriod(
-    new DateTimeImmutable('+1 day'),
-    new DateTimeImmutable('-1 day')
+$b = new DateTimePeriod(
+    DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($bStart))->format($minuteGranule)),
+    DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($bEnd))->format($minuteGranule))
 );
+assert($a->meets($b) === false); // a does not meet b by the minute granule
 ```
 
 ## How it works
