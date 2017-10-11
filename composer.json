@@ -1,8 +1,8 @@
 {
     "name": "pwm/datetime-period",
-    "description": "New project",
+    "description": "An implementation of the datetime period type including all their possible relations",
     "type": "library",
-    "keywords": ["datetime", "interval algebra"],
+    "keywords": ["datetime-period", "interval-algebra", "temporal-logic"],
     "homepage": "https://github.com/pwm/datetime-period",
     "license": "MIT",
     "authors": [
