@@ -163,7 +163,8 @@ Defining relations on periods is somewhat complex as there is no [total order](h
 ## Tests
 
 	$ vendor/bin/phpunit
-	$ vendor/bin/phpstan analyse -l 7 src
+	$ composer phpcs
+	$ composer phpstan
 
 ## Changelog
 
