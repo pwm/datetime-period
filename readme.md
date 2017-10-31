@@ -1,6 +1,7 @@
 # DateTimePeriod
 
 [![Build Status](https://travis-ci.org/pwm/datetime-period.svg?branch=master)](https://travis-ci.org/pwm/datetime-period)
+[![codecov](https://codecov.io/gh/pwm/datetime-period/branch/master/graph/badge.svg)](https://codecov.io/gh/pwm/datetime-period)
 [![Maintainability](https://api.codeclimate.com/v1/badges/25356a7f11c642ee8ac5/maintainability)](https://codeclimate.com/github/pwm/datetime-period/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/25356a7f11c642ee8ac5/test_coverage)](https://codeclimate.com/github/pwm/datetime-period/test_coverage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
