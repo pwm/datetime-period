@@ -180,6 +180,6 @@ Defining relations on periods is somewhat complex as there is no [total order](h
 
 [Click here](changelog.md)
 
-## LICENCE
+## Licence
 
 [MIT](LICENSE)
