@@ -7,6 +7,15 @@
 
 An implementation of the datetime period type for working with temporal intervals. The library includes the full set of relations on intervals defined by [Allen's Interval Algebra](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html). For further information see the "Usage" and "How it works" paragraphs.
 
+## Table of Contents
+
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Usage](#usage)
+* [How it works](#how-it-works)
+* [Tests](#tests)
+* [Changelog](#changelog)
+
 ## Requirements
 
 PHP 7.1+
