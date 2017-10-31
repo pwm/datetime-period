@@ -15,6 +15,7 @@ An implementation of the datetime period type for working with temporal interval
 * [How it works](#how-it-works)
 * [Tests](#tests)
 * [Changelog](#changelog)
+* [Licence](#licence)
 
 ## Requirements
 
@@ -178,3 +179,7 @@ Defining relations on periods is somewhat complex as there is no [total order](h
 ## Changelog
 
 [Click here](changelog.md)
+
+## LICENCE
+
+[MIT](LICENSE)
