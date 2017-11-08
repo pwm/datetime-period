@@ -67,7 +67,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T14:00:00+00:00'), new DateTimeImmutable('2017-01-01T16:00:00+00:00'));
 
         self::assertTrue($a->precedes($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['precedes']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['precedes']), $a, $b));
         self::assertTrue($b->precededBy($a)); // converse relation
     }
 
@@ -80,7 +80,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T12:00:00+00:00'), new DateTimeImmutable('2017-01-01T14:00:00+00:00'));
 
         self::assertTrue($a->meets($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['meets']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['meets']), $a, $b));
         self::assertTrue($b->metBy($a)); // converse relation
     }
 
@@ -93,7 +93,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T12:00:00+00:00'), new DateTimeImmutable('2017-01-01T14:00:00+00:00'));
 
         self::assertTrue($a->overlaps($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['overlaps']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['overlaps']), $a, $b));
         self::assertTrue($b->overlappedBy($a)); // converse relation
     }
 
@@ -106,7 +106,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T12:00:00+00:00'), new DateTimeImmutable('2017-01-01T14:00:00+00:00'));
 
         self::assertTrue($a->finishedBy($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['finishedBy']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['finishedBy']), $a, $b));
         self::assertTrue($b->finishes($a)); // converse relation
     }
 
@@ -119,7 +119,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T11:00:00+00:00'), new DateTimeImmutable('2017-01-01T13:00:00+00:00'));
 
         self::assertTrue($a->contains($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['contains']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['contains']), $a, $b));
         self::assertTrue($b->during($a)); // converse relation
     }
 
@@ -132,7 +132,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T10:00:00+00:00'), new DateTimeImmutable('2017-01-01T14:00:00+00:00'));
 
         self::assertTrue($a->starts($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['starts']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['starts']), $a, $b));
         self::assertTrue($b->startedBy($a)); // converse relation
     }
 
@@ -145,7 +145,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T10:00:00+00:00'), new DateTimeImmutable('2017-01-01T12:00:00+00:00'));
 
         self::assertTrue($a->equals($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['equals']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['equals']), $a, $b));
         self::assertTrue($b->equals($a)); // converse relation (equals is the converse of itself)
     }
 
@@ -158,7 +158,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T10:00:00+00:00'), new DateTimeImmutable('2017-01-01T12:00:00+00:00'));
 
         self::assertTrue($a->startedBy($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['startedBy']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['startedBy']), $a, $b));
         self::assertTrue($b->starts($a)); // converse relation
     }
 
@@ -171,7 +171,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T10:00:00+00:00'), new DateTimeImmutable('2017-01-01T14:00:00+00:00'));
 
         self::assertTrue($a->during($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['during']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['during']), $a, $b));
         self::assertTrue($b->contains($a)); // converse relation
     }
 
@@ -184,7 +184,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T10:00:00+00:00'), new DateTimeImmutable('2017-01-01T14:00:00+00:00'));
 
         self::assertTrue($a->finishes($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['finishes']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['finishes']), $a, $b));
         self::assertTrue($b->finishedBy($a)); // converse relation
     }
 
@@ -197,7 +197,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T11:00:00+00:00'), new DateTimeImmutable('2017-01-01T13:00:00+00:00'));
 
         self::assertTrue($a->overlappedBy($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['overlappedBy']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['overlappedBy']), $a, $b));
         self::assertTrue($b->overlaps($a)); // converse relation
     }
 
@@ -210,7 +210,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T10:00:00+00:00'), new DateTimeImmutable('2017-01-01T12:00:00+00:00'));
 
         self::assertTrue($a->metBy($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['metBy']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['metBy']), $a, $b));
         self::assertTrue($b->meets($a)); // converse relation
     }
 
@@ -223,7 +223,7 @@ final class DateTimePeriodTest extends TestCase
         $b = new DateTimePeriod(new DateTimeImmutable('2017-01-01T10:00:00+00:00'), new DateTimeImmutable('2017-01-01T12:00:00+00:00'));
 
         self::assertTrue($a->precededBy($b));
-        static::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['precededBy']), $a, $b));
+        self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['precededBy']), $a, $b));
         self::assertTrue($b->precedes($a)); // converse relation
     }
 
