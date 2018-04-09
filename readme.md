@@ -16,6 +16,7 @@ An implementation of the datetime period type for working with temporal interval
 * [How it works](#how-it-works)
 * [Tests](#tests)
 * [Changelog](#changelog)
+* [Todo](#todo)
 * [Licence](#licence)
 
 ## Requirements
@@ -35,10 +36,9 @@ $start = new DateTimeImmutable('2010-10-10T10:10:10+00:00');
 $end = new DateTimeImmutable('2011-11-11T11:11:11+00:00');
 $period = new DateTimePeriod($start, $end);
 
-// Start/end instants and their interval
+// Start and end instants (see the definition of instant under "How it works")
 $start = $period->getStart(); // DateTimeImmutable('2010-10-10T10:10:10+00:00')
 $end = $period->getEnd(); // DateTimeImmutable('2011-11-11T11:11:11+00:00')
-$interval = $period->getInterval(); // DateInterval('P1Y1M1DT1H1M1S')
 ```
 
 ##### Restrictions:
@@ -116,6 +116,10 @@ $a->metBy($b);
 $a->precededBy($b);
 ```
 
+##### Extensibility:
+
+The `DateTimePeriod` object itself is immutable, meaning that once created you can't change the state of the object, ie. the values of its properties. However the properties have been defined as `protected` so that you can subclass the type in your project if the need arises.
+
 ##### Working with different granularities:
 
 The 2 periods below meet on a timeline with hour granularity but does not meet on a more fine-grained timeline with minute granularity.
@@ -171,6 +175,16 @@ We arrived to the definition of a period. Now on to...
 
 Defining relations on periods is somewhat complex as there is no [total order](https://en.wikipedia.org/wiki/Total_order). In 1983 James F. Allen wrote a paper in which he defined 13 jointly exhaustive and pairwise disjoint binary relations on intervals, meaning that any 2 intervals are related exactly one way. You can see each of the 13 relations above, in the "Usage" section. These relations and the operations on them form what is referred to as [Allen's interval algebra](https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html).
 
+#### Complexities
+
+Dealing with calendrical time is difficult with many peculiarities. This, in turn, means that dealing with derivative entities, like `DateTimePeriod` is complex as well.
+
+Here is an example involving timezones:
+
+If you try to create a one year `DateTimePeriod` starting from `2018-03-26T08:00:00` and ending at `2019-03-26T08:00:00` for the timezone `Europe/London` it would fail with a `UTCOffsetMismatch` exception. This is because for the start instant the timezone `Europe/London` equals to `BST` (which equals to `UTC+01:00`) while for the end instant `Europe/London` equals to `GMT` (which equals to `UTC+00:00`). This is because daylight saving time happens on different days in different years.
+
+If you create the above period using UTC offsets, ie. from `2018-03-26T08:00:00+01:00` to `2019-03-26T08:00:00+01:00` that would not throw a `UTCOffsetMismatch`, however the end instant will not be a valid `Europe/London` datetime so you would have to calculate the correct time for `Europe/London` from your `UTC+01:00` offset. The supplied `DateTimePeriod::getUtcOffset()` function can help with this as you can map your current timezone to its UTC offset.
+
 ## Tests
 
 	$ vendor/bin/phpunit
@@ -180,6 +194,10 @@ Defining relations on periods is somewhat complex as there is no [total order](h
 ## Changelog
 
 [Click here](changelog.md)
+
+## Todo
+
+ * Work out a more user friendly solution for the UTC offset / timezone problem.
 
 ## Licence
 

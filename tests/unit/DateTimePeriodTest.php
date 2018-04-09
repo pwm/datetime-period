@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Pwm\DateTimePeriod;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 
 final class DateTimePeriodTest extends TestCase
@@ -37,16 +38,18 @@ final class DateTimePeriodTest extends TestCase
         self::assertInstanceOf(DateTimePeriod::class, $period);
         self::assertEquals($start, $period->getStart());
         self::assertEquals($end, $period->getEnd());
-        self::assertEquals($start->diff($end), $period->getInterval());
     }
 
     /**
      * @test
-     * @expectedException \Pwm\DateTimePeriod\Exceptions\TimeZoneMismatch
+     * @expectedException \Pwm\DateTimePeriod\Exceptions\UTCOffsetMismatch
      */
     public function ensure_that_start_and_end_timezones_are_equal(): void
     {
-        new DateTimePeriod(new DateTimeImmutable('2017-10-10T10:10:10+02:00'), new DateTimeImmutable('2017-10-10T10:10:10-05:00'));
+        new DateTimePeriod(
+            new DateTimeImmutable('2017-10-10T10:10:10+02:00'),
+            new DateTimeImmutable('2017-10-10T10:10:10-05:00')
+        );
     }
 
     /**
@@ -225,6 +228,80 @@ final class DateTimePeriodTest extends TestCase
         self::assertTrue($a->precededBy($b));
         self::assertFalse(self::checkOtherPredicates(array_diff(self::PREDICATES, ['precededBy']), $a, $b));
         self::assertTrue($b->precedes($a)); // converse relation
+    }
+
+    /**
+     * @test
+     */
+    public function relations_differ_on_timelines_with_different_granularities(): void
+    {
+        $aStart = '2017-01-01T12:12:09.829462+00:00';
+        $aEnd = '2017-01-01T14:23:34.534678+00:00';
+        $bStart = '2017-01-01T14:41:57.657388+00:00';
+        $bEnd = '2017-01-01T16:19:03.412832+00:00';
+
+        // The 2 periods created using the above instants meet on a timeline with an hourly granule
+        $hourGranule = 'Y-m-d\TH';
+        $a = new DateTimePeriod(
+            DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($aStart))->format($hourGranule)),
+            DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($aEnd))->format($hourGranule))
+        );
+        $b = new DateTimePeriod(
+            DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($bStart))->format($hourGranule)),
+            DateTimeImmutable::createFromFormat($hourGranule, (new DateTimeImmutable($bEnd))->format($hourGranule))
+        );
+        self::assertTrue($a->meets($b));
+
+        // The 2 periods created using the above instants do not meet on a timeline with a minutely granule
+        $minuteGranule = 'Y-m-d\TH:i';
+        $a = new DateTimePeriod(
+            DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($aStart))->format($minuteGranule)),
+            DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($aEnd))->format($minuteGranule))
+        );
+
+        $b = new DateTimePeriod(
+            DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($bStart))->format($minuteGranule)),
+            DateTimeImmutable::createFromFormat($minuteGranule, (new DateTimeImmutable($bEnd))->format($minuteGranule))
+        );
+        self::assertFalse($a->meets($b));
+    }
+
+    /**
+     * @test
+     * @expectedException \Pwm\DateTimePeriod\Exceptions\UTCOffsetMismatch
+     */
+    public function timezones_can_represent_different_utc_offsets_as_a_result_of_dst(): void
+    {
+        /*
+         * This 1 year period have 2 dates whose timezones look the same but they represent different UTC offsets.
+         * The first one generates a UTC+01 (BST) datetime while the 2nd one generates a UTC+00 (GMT) one.
+         * This is because daylight saving time (DST) happens on different days in different years.
+         */
+        new DateTimePeriod(
+            new DateTimeImmutable('2018-03-26T08:00:00', new DateTimeZone('Europe/London')),
+            new DateTimeImmutable('2019-03-26T08:00:00', new DateTimeZone('Europe/London'))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_map_timezones_to_utc_offsets(): void
+    {
+        self::assertSame('+01:00', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2018-03-26T08:00:00', new DateTimeZone('Europe/London'))));
+        self::assertSame('+00:00', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2019-03-26T08:00:00', new DateTimeZone('Europe/London'))));
+
+        self::assertSame('-04:00', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2018-03-11T08:00:00', new DateTimeZone('America/New_York'))));
+        self::assertSame('-05:00', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2021-03-11T08:00:00', new DateTimeZone('America/New_York'))));
+
+        self::assertSame('+03:00', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2018-03-25T08:00:00', new DateTimeZone('Europe/Kiev'))));
+        self::assertSame('+02:00', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2019-03-25T08:00:00', new DateTimeZone('Europe/Kiev'))));
+
+        self::assertSame('+09:30', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2018-04-01T08:00:00', new DateTimeZone('Australia/Adelaide'))));
+        self::assertSame('+10:30', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2019-04-01T08:00:00', new DateTimeZone('Australia/Adelaide'))));
+
+        self::assertSame('-02:30', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2018-03-11T08:00:00', new DateTimeZone('America/St_Johns'))));
+        self::assertSame('-03:30', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2021-03-11T08:00:00', new DateTimeZone('America/St_Johns'))));
     }
 
     private static function checkOtherPredicates(array $predicates, DateTimePeriod $a, DateTimePeriod $b): bool

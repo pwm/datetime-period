@@ -5,7 +5,6 @@ namespace Pwm\DateTimePeriod\Exceptions;
 
 use InvalidArgumentException;
 
-class TimeZoneMismatch extends InvalidArgumentException
+class UTCOffsetMismatch extends InvalidArgumentException
 {
-
 }

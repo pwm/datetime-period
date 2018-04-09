@@ -3,30 +3,27 @@ declare(strict_types=1);
 
 namespace Pwm\DateTimePeriod;
 
-use DateInterval;
+use DateTime;
 use DateTimeImmutable;
+use DateTimeZone;
 use Pwm\DateTimePeriod\Exceptions\NegativeDateTimePeriod;
-use Pwm\DateTimePeriod\Exceptions\TimeZoneMismatch;
+use Pwm\DateTimePeriod\Exceptions\UTCOffsetMismatch;
 
 class DateTimePeriod
 {
     /** @var DateTimeImmutable */
-    private $start;
+    protected $start;
 
     /** @var DateTimeImmutable */
-    private $end;
-
-    /** @var DateInterval */
-    private $interval;
+    protected $end;
 
     public function __construct(DateTimeImmutable $start, DateTimeImmutable $end)
     {
-        self::ensureTimeZonesMatch($start, $end);
+        self::ensureUTCOffsetsMatch($start, $end);
         self::ensureStartIsBeforeEnd($start, $end);
 
         $this->start = $start;
         $this->end = $end;
-        $this->interval = $this->start->diff($this->end);
     }
 
     /**
@@ -112,7 +109,6 @@ class DateTimePeriod
      */
     public function equals(DateTimePeriod $period): bool
     {
-        // Using == for structural comparison
         return
             $this->getStart() == $period->getStart() &&
             $this->getEnd() == $period->getEnd();
@@ -203,19 +199,24 @@ class DateTimePeriod
         return $this->end;
     }
 
-    public function getInterval(): DateInterval
+    public static function getUtcOffset(DateTimeImmutable $datetime): string
     {
-        return $this->interval;
+        $utcOffset = $datetime
+            ->getTimezone()
+            ->getOffset(new DateTime($datetime->format('Y-m-d H:i:s'), new DateTimeZone('UTC')));
+        $hour = floor(abs($utcOffset) / 3600);
+        $minute = abs($utcOffset) % 3600 / 60;
+        return sprintf('%s%02s:%02s', $utcOffset >= 0 ? '+' : '-', $hour, $minute);
     }
 
-    private static function ensureTimeZonesMatch(DateTimeImmutable $start, DateTimeImmutable $end): void
+    private static function ensureUTCOffsetsMatch(DateTimeImmutable $start, DateTimeImmutable $end): void
     {
-        if ($start->getTimezone()->getOffset($start) !== $end->getTimezone()->getOffset($end)) {
-            throw new TimeZoneMismatch(
+        if ($start->getOffset() !== $end->getOffset()) {
+            throw new UTCOffsetMismatch(
                 sprintf(
-                    'Start date timezone %s and end date timezone %s differ',
-                    $start->getTimezone()->getName(),
-                    $end->getTimezone()->getName()
+                    'Start instant UTC offset %s and end instant UTC offset %s differ.',
+                    $start->getOffset(),
+                    $end->getOffset()
                 )
             );
         }
