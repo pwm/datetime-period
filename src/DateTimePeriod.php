@@ -17,6 +17,9 @@ class DateTimePeriod
     /** @var DateTimeImmutable */
     protected $end;
 
+    private const SECONDS_IN_MINUTE = 60;
+    private const SECONDS_IN_HOUR   = 3600;
+
     public function __construct(DateTimeImmutable $start, DateTimeImmutable $end)
     {
         self::ensureUTCOffsetsMatch($start, $end);
@@ -199,13 +202,18 @@ class DateTimePeriod
         return $this->end;
     }
 
+    public function getNumberOfDays(): int
+    {
+        return (int)$this->getEnd()->diff($this->getStart())->format('%a');
+    }
+
     public static function getUtcOffset(DateTimeImmutable $datetime): string
     {
         $utcOffset = $datetime
             ->getTimezone()
             ->getOffset(new DateTime($datetime->format('Y-m-d H:i:s'), new DateTimeZone('UTC')));
-        $hour = floor(abs($utcOffset) / 3600);
-        $minute = abs($utcOffset) % 3600 / 60;
+        $hour = floor(abs($utcOffset) / self::SECONDS_IN_HOUR);
+        $minute = abs($utcOffset) % self::SECONDS_IN_HOUR / self::SECONDS_IN_MINUTE;
         return sprintf('%s%02s:%02s', $utcOffset >= 0 ? '+' : '-', $hour, $minute);
     }
 

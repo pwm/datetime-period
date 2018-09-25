@@ -42,6 +42,20 @@ final class DateTimePeriodTest extends TestCase
 
     /**
      * @test
+     */
+    public function it_creates_from_equal_start_and_end_instants(): void
+    {
+        $ts = new DateTimeImmutable();
+
+        $period = new DateTimePeriod($ts, $ts);
+
+        self::assertInstanceOf(DateTimePeriod::class, $period);
+        self::assertEquals($ts, $period->getStart());
+        self::assertEquals($ts, $period->getEnd());
+    }
+
+    /**
+     * @test
      * @expectedException \Pwm\DateTimePeriod\Exceptions\UTCOffsetMismatch
      */
     public function ensure_that_start_and_end_timezones_are_equal(): void
@@ -56,7 +70,7 @@ final class DateTimePeriodTest extends TestCase
      * @test
      * @expectedException \Pwm\DateTimePeriod\Exceptions\NegativeDateTimePeriod
      */
-    public function ensure_that_start_is_before_end(): void
+    public function it_throws_if_start_date_is_before_end_date(): void
     {
         new DateTimePeriod(new DateTimeImmutable('+1 day'), new DateTimeImmutable('-1 day'));
     }
@@ -302,6 +316,32 @@ final class DateTimePeriodTest extends TestCase
 
         self::assertSame('-02:30', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2018-03-11T08:00:00', new DateTimeZone('America/St_Johns'))));
         self::assertSame('-03:30', DateTimePeriod::getUtcOffset(new DateTimeImmutable('2021-03-11T08:00:00', new DateTimeZone('America/St_Johns'))));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_the_correct_number_of_days_in_a_period(): void
+    {
+        $dt = new DateTimeImmutable('2017-01-01T12:00:00+00:00');
+        self::assertSame(0, (new DateTimePeriod($dt, $dt))->getNumberOfDays());
+
+        $dts = new DateTimeImmutable('2017-01-01T12:00:00+00:00');
+        $dte = new DateTimeImmutable('2017-01-02T11:59:59+00:00');
+        self::assertSame(0, (new DateTimePeriod($dts, $dte))->getNumberOfDays());
+
+        $dts = new DateTimeImmutable('2017-01-01T12:00:00+00:00');
+        $dte = new DateTimeImmutable('2017-01-02T12:00:00+00:00');
+        self::assertSame(1, (new DateTimePeriod($dts, $dte))->getNumberOfDays());
+
+        $dts = new DateTimeImmutable('2017-01-01T12:00:00+00:00');
+        $dte = new DateTimeImmutable('2018-01-01T12:00:00+00:00');
+        self::assertSame(365, (new DateTimePeriod($dts, $dte))->getNumberOfDays());
+
+        // leap year
+        $dts = new DateTimeImmutable('2016-01-01T12:00:00+00:00');
+        $dte = new DateTimeImmutable('2017-01-01T12:00:00+00:00');
+        self::assertSame(366, (new DateTimePeriod($dts, $dte))->getNumberOfDays());
     }
 
     private static function checkOtherPredicates(array $predicates, DateTimePeriod $a, DateTimePeriod $b): bool

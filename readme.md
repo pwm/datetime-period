@@ -154,6 +154,19 @@ $b = new DateTimePeriod(
 assert($a->meets($b) === false); // a does not meet b by the minute granule
 ```
 
+##### Miscellaneous:
+
+This is a list of small helper methods that can save you time when you need their specific functionality.
+
+1. Get the number of days in a period:
+
+```php
+$start = new DateTimeImmutable('2016-01-01T11:11:11+00:00');
+$end = new DateTimeImmutable('2018-01-01T11:11:11+00:00');
+$period = new DateTimePeriod($start, $end);
+assert(366 + 365 === $period->getNumberOfDays()); // 2016 was a leap year
+```
+
 ## How it works
 
 In order to be able to talk about periods first let's agree on the following definitions:
@@ -183,13 +196,16 @@ Here is an example involving timezones:
 
 If you try to create a one year `DateTimePeriod` starting from `2018-03-26T08:00:00` and ending at `2019-03-26T08:00:00` for the timezone `Europe/London` it would fail with a `UTCOffsetMismatch` exception. This is because for the start instant the timezone `Europe/London` equals to `BST` (which equals to `UTC+01:00`) while for the end instant `Europe/London` equals to `GMT` (which equals to `UTC+00:00`). This is because daylight saving time happens on different days in different years.
 
-If you create the above period using UTC offsets, ie. from `2018-03-26T08:00:00+01:00` to `2019-03-26T08:00:00+01:00` that would not throw a `UTCOffsetMismatch`, however the end instant will not be a valid `Europe/London` datetime so you would have to calculate the correct time for `Europe/London` from your `UTC+01:00` offset. The supplied `DateTimePeriod::getUtcOffset()` function can help with this as you can map your current timezone to its UTC offset.
+If you create the above period using UTC offsets, ie. from `2018-03-26T08:00:00+01:00` to `2019-03-26T08:00:00+01:00` that would not throw a `UTCOffsetMismatch`, however the end instant will not be a valid `Europe/London` datetime so you would have to calculate the correct time for `Europe/London` from your `UTC+01:00` offset.
+
+The supplied `DateTimePeriod::getUtcOffset()` function can help ease this problem by mapping your current timezone to its UTC offset.
 
 ## Tests
 
 	$ vendor/bin/phpunit
 	$ composer phpcs
 	$ composer phpstan
+	$ composer infection
 
 ## Changelog
 
